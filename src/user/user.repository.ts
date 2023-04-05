@@ -1,4 +1,8 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -40,6 +44,16 @@ export class UserRepository extends Repository<User> {
 
   async findAll(): Promise<User[]> {
     return await this.find({ select: ['id', 'name', 'email'] });
+  }
+
+  async findOneUser(id: number): Promise<User> {
+    const user = await this.findOne({
+      where: { id },
+      select: ['id', 'name', 'email'],
+    });
+    if (!user) throw new NotFoundException(`User with id '${id}' not found`);
+
+    return user;
   }
 
   private async hashPassword(password: string, salt: string): Promise<string> {
