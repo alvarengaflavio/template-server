@@ -23,8 +23,8 @@ export class UserService {
     return await this.userRepository.findOneUser(id);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    return await this.userRepository.updateUser(id, updateUserDto);
   }
 
   async remove(id: number) {

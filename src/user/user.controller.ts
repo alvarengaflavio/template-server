@@ -66,12 +66,19 @@ export class UserController {
   }
 
   @Patch(':id')
-  update(
+  @ApiOperation({
+    summary: 'Update a user by ID',
+    description:
+      'Update a user by ID. The ID is passed as a parameter in the URL.',
+  })
+  async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body(new ValidationPipe({ whitelist: true }))
+    updateUserDto: UpdateUserDto,
   ) {
     try {
-      return this.userService.update(id, updateUserDto);
+      this.logger.debug(`Updating user with id ${id}`);
+      return await this.userService.update(id, updateUserDto);
     } catch (error) {
       typeOrmExceptionHelper(error);
     }
