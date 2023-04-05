@@ -7,9 +7,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   username: String(process.env.POSTGRES_USER),
   password: String(process.env.POSTGRES_PASSWORD),
   database: String(process.env.POSTGRES_DATABASE),
-  // extra: {
-  //   socketPath: String(process.env.SOCKET),
-  // },
   synchronize: Boolean(process.env.RUN_MIGRATIONS) || false,
-  entities: [__dirname + '/**/*.entity.{js,ts}'], // ! PRODUCTION: false
+  entities: [__dirname + '/**/*.entity.{js,ts}'],
 };
