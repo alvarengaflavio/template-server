@@ -2,6 +2,7 @@ import { Error } from '../types/types';
 import { nestErrorHelper } from './nest-error.helper';
 
 export function typeOrmExceptionHelper(err: Error) {
+  console.error(err);
   switch (err?.code) {
     case '23505':
       nestErrorHelper({

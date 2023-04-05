@@ -15,13 +15,13 @@ export function nestErrorHelper(error: Error) {
   }
 
   const errorsMap = new Map([
-    ['Authentication', new UnauthorizedException(error.message)],
     [
       'BadRequestError',
       new BadRequestException(error.message ?? 'Bad Request'),
     ],
     ['ConflictError', new ConflictException(error.message)],
     ['NotFoundError', new NotFoundException(error.message)],
+    ['UnauthorizedError', new UnauthorizedException(error.message)],
     [
       'UnprocessableEntityError',
       new UnprocessableEntityException(
