@@ -1,22 +1,28 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  ValidationPipe,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Logger,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
+  ValidationPipe,
 } from '@nestjs/common';
-import { UserService } from './user.service';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { typeOrmExceptionHelper } from 'src/common/helpers/type-orm-error.helper';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { UserService } from './user.service';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
+  private readonly logger = new Logger('UserController');
+
   constructor(private readonly userService: UserService) {}
 
   @Post()
@@ -25,7 +31,11 @@ export class UserController {
     description: 'Create a new User',
   })
   async create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
-    return await this.userService.create(createUserDto);
+    try {
+      return await this.userService.create(createUserDto);
+    } catch (error) {
+      typeOrmExceptionHelper(error);
+    }
   }
 
   @Get()
@@ -34,7 +44,11 @@ export class UserController {
     description: 'Get all users',
   })
   async findAll() {
-    return await this.userService.findAll();
+    try {
+      return await this.userService.findAll();
+    } catch (error) {
+      typeOrmExceptionHelper(error);
+    }
   }
 
   @Get(':id')
@@ -44,7 +58,11 @@ export class UserController {
       'Get a user by ID. The ID is passed as a parameter in the URL.',
   })
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    return await this.userService.findOne(id);
+    try {
+      return await this.userService.findOne(id);
+    } catch (error) {
+      typeOrmExceptionHelper(error);
+    }
   }
 
   @Patch(':id')
@@ -52,11 +70,26 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.update(id, updateUserDto);
+    try {
+      return this.userService.update(id, updateUserDto);
+    } catch (error) {
+      typeOrmExceptionHelper(error);
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.remove(id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Delete a user by ID',
+    description:
+      'Delete a user by ID. The ID is passed as a parameter in the URL.',
+  })
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    try {
+      this.logger.debug(`Removing user with id ${id}`);
+      await this.userService.remove(id);
+    } catch (error) {
+      typeOrmExceptionHelper(error);
+    }
   }
 }

@@ -14,7 +14,7 @@ export class UserRepository extends Repository<User> {
     super(User, dataSource.createEntityManager());
   }
 
-  async signUp(
+  async createUser(
     createUserDto: CreateUserDto,
   ): Promise<Omit<User, 'password' | 'salt'>> {
     const { name, email, password, confirmPassword } = createUserDto;
@@ -29,11 +29,7 @@ export class UserRepository extends Repository<User> {
     user.salt = await genSalt();
     user.password = await this.hashPassword(password, user.salt);
 
-    await this.save(user).catch((err) => {
-      //   typeOrmExceptionHelper(err);
-      console.error(err);
-      throw new UnprocessableEntityException('Error creating user');
-    });
+    await this.save(user);
 
     return {
       id: user.id,
@@ -51,9 +47,18 @@ export class UserRepository extends Repository<User> {
       where: { id },
       select: ['id', 'name', 'email'],
     });
-    if (!user) throw new NotFoundException(`User with id '${id}' not found`);
+
+    if (!user)
+      throw {
+        name: 'NotFoundError',
+        message: `User with id '${id}' not found`,
+      };
 
     return user;
+  }
+
+  async removeUser(id: number): Promise<void> {
+    await this.remove(await this.findOneUser(id));
   }
 
   private async hashPassword(password: string, salt: string): Promise<string> {

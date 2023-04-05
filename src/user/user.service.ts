@@ -12,7 +12,7 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    return await this.userRepository.signUp(createUserDto);
+    return await this.userRepository.createUser(createUserDto);
   }
 
   async findAll() {
@@ -27,7 +27,7 @@ export class UserService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    return await this.userRepository.removeUser(id);
   }
 }
