@@ -20,8 +20,8 @@ export class AuthService {
     return this.userRepository.create(createUserDto);
   }
 
-  async login(authCredentialsDto: AuthCredentialsDto) {
-    const email = await this.userRepository.login(authCredentialsDto);
+  async signIn(authCredentialsDto: AuthCredentialsDto) {
+    const email = await this.userRepository.signIn(authCredentialsDto);
     const payload: JwtPayload = { email };
     const accessToken = await this.jwtService.signAsync(payload);
 
@@ -30,9 +30,5 @@ export class AuthService {
     );
 
     return { accessToken };
-  }
-
-  logged() {
-    return `This action returns all auth`;
   }
 }

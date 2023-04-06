@@ -81,7 +81,7 @@ export class UserRepository extends Repository<User> {
     await this.remove(await this.findOneFull(id));
   }
 
-  async login(dto: AuthCredentialsDto) {
+  async signIn(dto: AuthCredentialsDto) {
     const { email, password } = dto;
 
     const user = await this.findOne({ where: { email } });
