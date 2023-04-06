@@ -4,3 +4,8 @@ export type Error = {
   code?: string;
   detail?: string;
 };
+
+export type JwtPayload = {
+  id?: number;
+  email: string;
+};
