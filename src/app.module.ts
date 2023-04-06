@@ -3,10 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { typeOrmConfig } from './common/db/typeorm.config';
-import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import configuration from './common/config/configuration';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
