@@ -13,6 +13,7 @@ async function bootstrap() {
     .setTitle('Template Server')
     .setDescription('The API description')
     .setVersion('1.0')
+    .addTag('auth')
     .addTag('user')
     .addTag('server')
     .build();

@@ -1,34 +1,40 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Post, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { AuthCredentialsDto } from './dto/auth-credentials.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { exceptionsFilter } from 'src/common/helpers/exceptions-helper';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post('/signup')
+  @ApiOperation({
+    summary: 'Sign up',
+    description:
+      'Sign up a new user with username and password credentials. Username must be lowercase. Password must be at least 8 characters long, and contain at least one lowercase letter, one uppercase letter, one number, and one symbol.',
+  })
+  signUp(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+    try {
+      return this.authService.signUp(createUserDto);
+    } catch (error) {
+      exceptionsFilter(error);
+    }
+  }
+
+  @Post('/login')
+  login(@Body(ValidationPipe) createAuthDto: AuthCredentialsDto) {
+    try {
+      return this.authService.login(createAuthDto);
+    } catch (error) {
+      exceptionsFilter(error);
+    }
   }
 
   @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  logged() {
+    return this.authService.logged();
   }
 }
