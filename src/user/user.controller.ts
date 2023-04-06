@@ -10,16 +10,20 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { typeOrmExceptionHelper } from 'src/common/helpers/type-orm-error.helper';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { exceptionsFilter } from 'src/common/helpers/exceptions-helper';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('user')
 @Controller('user')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
 export class UserController {
   private readonly logger = new Logger('UserController');
 
@@ -34,7 +38,7 @@ export class UserController {
     try {
       return await this.userService.create(createUserDto);
     } catch (error) {
-      typeOrmExceptionHelper(error);
+      exceptionsFilter(error);
     }
   }
 
@@ -47,7 +51,7 @@ export class UserController {
     try {
       return await this.userService.findAll();
     } catch (error) {
-      typeOrmExceptionHelper(error);
+      exceptionsFilter(error);
     }
   }
 
@@ -61,7 +65,7 @@ export class UserController {
     try {
       return await this.userService.findOne(id);
     } catch (error) {
-      typeOrmExceptionHelper(error);
+      exceptionsFilter(error);
     }
   }
 
@@ -80,7 +84,7 @@ export class UserController {
       this.logger.debug(`Updating user with id ${id}`);
       return await this.userService.update(id, updateUserDto);
     } catch (error) {
-      typeOrmExceptionHelper(error);
+      exceptionsFilter(error);
     }
   }
 
@@ -96,7 +100,7 @@ export class UserController {
       this.logger.debug(`Removing user with id ${id}`);
       await this.userService.remove(id);
     } catch (error) {
-      typeOrmExceptionHelper(error);
+      exceptionsFilter(error);
     }
   }
 }
