@@ -4,6 +4,7 @@ import { DataSource, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { AuthCredentialsDto } from 'src/auth/dto/auth-credentials.dto';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -78,6 +79,25 @@ export class UserRepository extends Repository<User> {
 
   async removeUser(id: number): Promise<void> {
     await this.remove(await this.findOneFull(id));
+  }
+
+  async login(dto: AuthCredentialsDto) {
+    const { email, password } = dto;
+
+    const user = await this.findOne({ where: { email } });
+    if (!user)
+      throw {
+        name: 'UnauthorizedError',
+        message: 'Invalid credentials',
+      };
+
+    if (!(await this.validatePassword(password, user.password)))
+      throw {
+        name: 'UnauthorizedError',
+        message: 'Invalid credentials',
+      };
+
+    return user.email;
   }
 
   private async hashPassword(password: string, salt: string): Promise<string> {
