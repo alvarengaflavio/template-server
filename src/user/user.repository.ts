@@ -1,13 +1,9 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { compare, genSalt, hash } from 'bcrypt';
 import { DataSource, Repository } from 'typeorm';
-import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { genSalt, hash, compare } from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -40,10 +36,6 @@ export class UserRepository extends Repository<User> {
       name: user.name,
       email: user.email,
     };
-  }
-
-  async findAll(): Promise<User[]> {
-    return await this.find({ select: ['id', 'name', 'email'] });
   }
 
   async findOneUser(id: number): Promise<User> {
