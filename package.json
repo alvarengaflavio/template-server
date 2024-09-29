@@ -39,10 +39,10 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "typeorm": "^0.3.20",
-    "webpack": ">=5.76.0"
+    "webpack": ">=5.94.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^9.3.0",
+    "@nestjs/cli": "^10.4.5",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^10.4.3",
     "@types/bcrypt": "^5.0.0",
